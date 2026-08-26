@@ -1,131 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Vanilla WebAR App</title>
-    <!-- Three.js Library -->
-    <script src="https://cloudflare.com"></script>
-    <!-- AR.js for Three.js -->
-    <script src="https://githack.com"></script>
-    <style>
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-        }
-
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include A-Frame for 3D graphics -->
+    <script src="https://aframe.io"></script>
+    <!-- Include AR.js for augmented reality tracking -->
+    <script src="https://gcr.io"></script>
 </head>
 
-<body>
-
-    <script>
-        // 1. Initialize Three.js Scene, Camera, and Renderer
-        const scene = new THREE.Scene();
-
-        // Create a basic ambient light so the object is visible
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-        scene.add(ambientLight);
-
-        // Create a directional light for shadows/depth
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(0, 1, 0);
-        scene.add(directionalLight);
-
-        // Setup camera
-        const camera = new THREE.Camera();
-        scene.add(camera);
-
-        // Setup renderer
-        const renderer = new THREE.WebGLRenderer({
-            antialiasing: true,
-            alpha: true // Crucial: allows the camera video stream to show behind the 3D canvas
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        document.body.appendChild(renderer.domElement);
-
-        // 2. Initialize AR.js Context and Source
-        const arToolkitSource = new THREEx.ArToolkitSource({
-            sourceType: 'webcam'
-        });
-
-        arToolkitSource.init(function onReady() {
-            setTimeout(() => {
-                onResize();
-            }, 2000); // Delay handles mobile browser address bar shifts
-        });
-
-        const arToolkitContext = new THREEx.ArToolkitContext({
-            cameraParametersUrl: 'https://githack.com',
-            detectionMode: 'mono'
-        });
-
-        arToolkitContext.init(function onCompleted() {
-            camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
-        });
-
-        // Handle responsiveness and mobile orientation changes
-        window.addEventListener('resize', onResize);
-
-        function onResize() {
-            arToolkitSource.onResizeElement();
-            arToolkitSource.copyElementSizeTo(renderer.domElement);
-            if (arToolkitContext.arController !== null) {
-                arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
-            }
-        }
-
-        // 3. Define the Marker Anchor Group
-        const markerControlsGroup = new THREE.Group();
-        scene.add(markerControlsGroup);
-
-        // Uses the default 'Hiro' marker
-        const markerControls = new THREEx.ArMarkerControls(arToolkitContext, markerControlsGroup, {
-            type: 'pattern',
-            patternUrl: 'https://githack.com'
-        });
-
-        // 4. Add 3D Content to the Marker Group
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshNormalMaterial({
-            transparent: true,
-            opacity: 0.8
-        });
-        const cube = new THREE.Mesh(geometry, material);
-
-        // Position the cube slightly above the marker surface
-        cube.position.y = 0.5;
-        markerControlsGroup.add(cube);
-
-        // 5. Animation and Rendering Loop
-        function animate() {
-            requestAnimationFrame(animate);
-
-            if (arToolkitSource.ready !== false) {
-                arToolkitContext.update(arToolkitSource.domElement);
-            }
-
-            // Slowly rotate the cube if the marker is visible
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
-
-            renderer.render(scene, camera);
-        }
-
-        animate();
-    </script>
-
+<body style="margin: 0px; overflow: hidden;">
+    <!-- Setup the AR scene embedded in the web page -->
+    <a-scene embedded arjs>
+        <!-- Define the target marker (Hiro is a preset default) -->
+        <a-marker preset="hiro">
+            <!-- Define the 3D shape to show when the marker is seen -->
+            <a-box position="0 0.5 0" material="color: cyan;"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 2000"></a-box>
+        </a-marker>
+        <!-- Define the smartphone camera view -->
+    </a-scene>
 </body>
 
 </html>
