@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Include A-Frame for 3D graphics -->
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!-- Stable production A-Frame library -->
     <script src="https://aframe.io"></script>
-    <!-- Include AR.js for augmented reality tracking -->
-    <script src="https://gcr.io"></script>
-</head>
-
-<body style="margin: 0px; overflow: hidden;">
-    <!-- Setup the AR scene embedded in the web page -->
-    <a-scene embedded arjs>
-        <!-- Define the target marker (Hiro is a preset default) -->
-        <a-marker preset="hiro">
-            <!-- Define the 3D shape to show when the marker is seen -->
-            <a-box position="0 0.5 0" material="color: cyan;"
-                animation="property: rotation; to: 0 360 0; loop: true; dur: 2000"></a-box>
-        </a-marker>
-        <!-- Define the smartphone camera view -->
+    <!-- Stable production AR.js library via official jsDelivr CDN -->
+    <script src="https://jsdelivr.net"></script>
+  </head>
+  <body style="margin: 0px; overflow: hidden;">
+    <!-- Embedded AR scene with tracking UI enabled for debugging -->
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+      
+      <!-- Tracks the Hiro marker -->
+      <a-marker preset="hiro">
+        <!-- Renders a cyan box that rotates -->
+        <a-box position="0 0.5 0" material="color: cyan;" animation="property: rotation; to: 0 360 0; loop: true; dur: 2000"></a-box>
+      </a-marker>
+      
+      
+      
     </a-scene>
-</body>
-
+  </body>
 </html>
